@@ -22,7 +22,7 @@ import os
 def image_generation(model, number_of_images=1):
     img = generate_images(model)
     #TODO: run this image through the ESRGAN upscaler and return it, simple enough ?
-    upscaled_img = torchvision.transforms.functional.resize(img, (1024, 1024), interpolation=2)
+    #upscaled_img = torchvision.transforms.functional.resize(img, (1024, 1024), interpolation=2)
     upscale_model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
     file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -45,16 +45,17 @@ def image_generation(model, number_of_images=1):
     #print(type(open_cv_image)) 
     #print(type(img))
     #print(type(upscaled_img))
-    output, _ = upsampler.enhance(open_cv_image, outscale=4)
-    output2, _ = upsampler.enhance(output   , outscale=4)
+    output, _ = upsampler.enhance(open_cv_image, outscale=8)
+    #output2, _ = upsampler.enhance(output   , outscale=4)
     #return f"generating {number_of_images} images from {model}"
-    cv2.imwrite('out/output_upscaled.png', output)
-    cv2.imwrite('out/output_upscaled_dupli.png', output2)
-    cv2.imwrite('out/output.png', np.array(img)[:, :, ::-1])
-    output2 = cv2.cvtColor(output2, cv2.COLOR_BGR2RGB)
+    #cv2.imwrite('out/output_upscaled.png', output)
+    #cv2.imwrite('out/output_upscaled_dupli.png', output2)
+    #cv2.imwrite('out/output.png', np.array(img)[:, :, ::-1])
+    output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
     gc.collect()
     torch.cuda.empty_cache()
-    return PIL.Image.fromarray(output2)
+    del(upsampler)
+    return PIL.Image.fromarray(output)
 if __name__ == "__main__":
     description = "This is a web demo of a projected GAN trained on photos of thirty paintings from the series of paintings Welcome home.                                                                                         The abstract expressionism and color field models were initially trained on images from their perspective art directions and then transfer learned to Hana's houses."
     inputs = gr.inputs.Radio(["Hana Hanak houses", "Hana Hanak houses - abstract expressionism", "Hana Hanak houses - color field"])

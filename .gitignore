@@ -3,3 +3,5 @@ __pycache__/
 out/*
 *.pyc
 *.pyo
+requirements_old.txt
+hana_env/
