@@ -1,0 +1,4 @@
+weights/*
+__pycache__/*
+Real-ESRGAN/weights/*
+Real-ESRGAN/__pycache__/*
